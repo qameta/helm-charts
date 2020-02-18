@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 3.117.0
+
+name: allure-ee
+version: 1.5.3
+
+description: Allure Enterprise Edition
+
+home: https://qameta.io
+sources:
+  - https://hub.docker.com/r/allure/allure-ui
+  - https://hub.docker.com/r/allure/allure-uaa
+  - https://hub.docker.com/r/allure/allure-report
+
+maintainers:
+- name: eroshenkoam
+  email: eroshenkoam@qameta.io

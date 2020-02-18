@@ -1,0 +1,17 @@
+name: Build
+
+on:
+  push:
+    branches:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run chart-testing (lint)
+      id: lint
+      uses: helm/chart-testing-action@v1.0.0-alpha.3
+      with:
+        command: lint
