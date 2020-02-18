@@ -2,4 +2,8 @@
 .idea
 *.iml
 
+# Charts
 charts/**/charts
+
+# Configs
+configs
