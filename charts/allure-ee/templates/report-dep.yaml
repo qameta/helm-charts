@@ -19,6 +19,10 @@ spec:
       labels:
         app: {{ template "allure-ee.report.fullname" . }}
     spec:
+{{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+{{- end }}
 {{- if .Values.imagePullSecret }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecret }}
