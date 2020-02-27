@@ -65,13 +65,6 @@ spec:
             port: http
 {{ toYaml .Values.gateway.probes.readiness.probe | indent 10 }}
 {{- end }}
-{{- if .Values.gateway.probes.startup.enabled }}
-        startupProbe:
-          httpGet:
-            path: /management/health
-            port: http
-{{ toYaml .Values.gateway.probes.startup.probe | indent 10 }}
-{{- end }}
 {{- with .Values.gateway.resources }}
         resources:
 {{ toYaml . | indent 10 }}
