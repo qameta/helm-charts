@@ -6,6 +6,13 @@ password: admin
 licenseKey:
 # imagePullSecret: allure-server
 
+rbac:
+  create: false
+
+serviceAccount:
+  create: true
+  name: allure-ee
+
 strategy:
   type: RollingUpdate
   rollingUpdate:
