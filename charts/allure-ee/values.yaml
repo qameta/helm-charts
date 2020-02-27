@@ -68,16 +68,14 @@ gateway:
       enabled: true
       probe:
         initialDelaySeconds: 60
+        failureThreshold: 10
+        periodSeconds: 30
     readiness:
       enabled: true
       probe:
         initialDelaySeconds: 60
-    startup:
-      enabled: true
-      probe:
-        failureThreshold: 10
+        failureThreshold: 5
         periodSeconds: 30
-        initialDelaySeconds: 60
 
 uaa:
   replicaCount: 1
@@ -100,16 +98,14 @@ uaa:
       enabled: true
       probe:
         initialDelaySeconds: 60
+        failureThreshold: 10
+        periodSeconds: 30
     readiness:
       enabled: true
       probe:
         initialDelaySeconds: 60
-    startup:
-      enabled: true
-      probe:
-        failureThreshold: 10
+        failureThreshold: 5
         periodSeconds: 30
-        initialDelaySeconds: 60
 
 report:
   replicaCount: 1
@@ -142,13 +138,11 @@ report:
       enabled: true
       probe:
         initialDelaySeconds: 60
+        failureThreshold: 10
+        periodSeconds: 30
     readiness:
       enabled: true
       probe:
         initialDelaySeconds: 60
-    startup:
-      enabled: true
-      probe:
-        failureThreshold: 10
+        failureThreshold: 5
         periodSeconds: 30
-        initialDelaySeconds: 60
