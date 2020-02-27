@@ -87,14 +87,6 @@ spec:
             port: http
 {{ toYaml .Values.report.probes.readiness.probe | indent 10 }}
 {{- end }}
-{{- if .Values.report.probes.startup.enabled }}
-        startupProbe:
-          httpGet:
-            path: /rs/management/health
-            port: http
-{{ toYaml .Values.report.probes.startup.probe | indent 10 }}
-
-{{- end }}
 {{- if eq .Values.report.env.open.ALLURE_BLOBSTORAGE_TYPE "FILE_SYSTEM" }}
         volumeMounts:
         - mountPath: "{{ .Values.report.env.open.ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY }}"
