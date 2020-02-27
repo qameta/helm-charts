@@ -85,14 +85,12 @@ spec:
               key: {{ printf "%s.%s" "uaa" $name | quote }}
 {{- end }}
 {{- end }}
-{{- if .Values.uaa.probes.liveness.enabled }}
+{{- if .Values.uaa.probes.enabled }}
         livenessProbe:
           httpGet:
             path: /uaa/management/health
             port: http
 {{ toYaml .Values.uaa.probes.liveness.probe | indent 10 }}
-{{- end }}
-{{- if .Values.uaa.probes.readiness.enabled }}
         readinessProbe:
           httpGet:
             path: /uaa/management/health
