@@ -64,14 +64,13 @@ gateway:
         -XX:+UseG1GC
   resources: {}
   probes:
+    enabled: true
     liveness:
-      enabled: true
       probe:
         initialDelaySeconds: 60
         failureThreshold: 10
         periodSeconds: 30
     readiness:
-      enabled: true
       probe:
         initialDelaySeconds: 60
         failureThreshold: 5
@@ -94,14 +93,13 @@ uaa:
         -XX:+UseG1GC
   resources: {}
   probes:
+    enabled: true
     liveness:
-      enabled: true
       probe:
         initialDelaySeconds: 60
         failureThreshold: 10
         periodSeconds: 30
     readiness:
-      enabled: true
       probe:
         initialDelaySeconds: 60
         failureThreshold: 5
@@ -134,14 +132,13 @@ report:
         -XX:+UseG1GC
   resources: {}
   probes:
+    enabled: true
     liveness:
-      enabled: true
       probe:
         initialDelaySeconds: 60
         failureThreshold: 10
         periodSeconds: 30
     readiness:
-      enabled: true
       probe:
         initialDelaySeconds: 60
         failureThreshold: 5

@@ -73,14 +73,12 @@ spec:
               key: {{ printf "%s.%s" "report" $name | quote }}
 {{- end }}
 {{- end }}
-{{- if .Values.report.probes.liveness.enabled }}
+{{- if .Values.report.probes.enabled }}
         livenessProbe:
           httpGet:
             path: /rs/management/health
             port: http
 {{ toYaml .Values.report.probes.liveness.probe | indent 10 }}
-{{- end }}
-{{- if .Values.report.probes.readiness.enabled }}
         readinessProbe:
           httpGet:
             path: /rs/management/health
