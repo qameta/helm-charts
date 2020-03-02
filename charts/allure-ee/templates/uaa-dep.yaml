@@ -20,7 +20,7 @@ spec:
         app: {{ template "allure-ee.uaa.fullname" . }}
     spec:
 {{- if .Values.rbac.enabled }}
-      serviceAccountName:  {{ template "allure-ee.fullname" . }}
+      serviceAccountName:  {{ template "allure-ee.name" . }}
 {{- end }}
 {{- if .Values.imagePullSecret }}
       imagePullSecrets:
