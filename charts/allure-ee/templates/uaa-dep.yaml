@@ -19,9 +19,8 @@ spec:
       labels:
         app: {{ template "allure-ee.uaa.fullname" . }}
     spec:
-{{- if .Values.serviceAccount.create }}
-      serviceAccount: {{ .Values.serviceAccount.name }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+{{- if .Values.rbac.enabled }}
+      serviceAccountName:  {{ template "allure-ee.name" . }}
 {{- end }}
 {{- if .Values.imagePullSecret }}
       imagePullSecrets:

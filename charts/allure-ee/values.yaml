@@ -1,4 +1,4 @@
-version: 3.117.0
+version: 3.118.0
 
 username: admin
 password: admin
@@ -7,11 +7,7 @@ licenseKey:
 # imagePullSecret: allure-server
 
 rbac:
-  create: false
-
-serviceAccount:
-  create: true
-  name: allure-ee
+  enabled: true
 
 strategy:
   type: RollingUpdate

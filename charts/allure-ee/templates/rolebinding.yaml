@@ -1,20 +1,19 @@
-{{- if .Values.rbac.create }}
+{{- if .Values.rbac.enabled -}}
 # bind this rbac role to default ServiceAccount in your namespace
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ template "allure-ee.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "allure-ee.name" . }}-namespace-reader
+  labels:
+    app: {{ template "allure-ee.name" . }}
+    chart: {{ template "allure-ee.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 subjects:
 - kind: ServiceAccount
-{{- if  .Values.serviceAccount.create }}
-  name: {{ .Values.serviceAccount.name }}
-{{- else -}}
-  name: default
-{{- end }}
-  apiGroup: ""
+  name: {{ template "allure-ee.name" . }}
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: namespace-reader
-  apiGroup: ""
+  name: {{ template "allure-ee.name" . }}-namespace-reader
 {{- end -}}
