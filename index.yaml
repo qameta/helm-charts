@@ -3,6 +3,23 @@ entries:
   allure-ee:
   - apiVersion: v1
     appVersion: 3.118.0
+    created: "2020-03-03T10:29:48.705995762Z"
+    description: Allure Enterprise Edition
+    digest: b6d6c76310560cf596b6499a6a4d9c20191a42c10ebf9cee2d581e0d6a0d5c70
+    home: https://qameta.io
+    maintainers:
+    - email: eroshenkoam@qameta.io
+      name: eroshenkoam
+    name: allure-ee
+    sources:
+    - https://hub.docker.com/r/allure/allure-ui
+    - https://hub.docker.com/r/allure/allure-uaa
+    - https://hub.docker.com/r/allure/allure-report
+    urls:
+    - https://github.com/qameta/helm-charts/releases/download/allure-ee-1.7.0/allure-ee-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v1
+    appVersion: 3.118.0
     created: "2020-03-02T11:44:51.352567782Z"
     description: Allure Enterprise Edition
     digest: 441c0f2e428c007d63bc2bb08242211533bed9150323537cfb5391f9566b2cfc
