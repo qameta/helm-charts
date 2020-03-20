@@ -54,7 +54,7 @@ gateway:
   env:
     open:
       SPRING_PROFILES_ACTIVE: kubernetes
-      JAVA_OPTS: >
+      JAVA_TOOL_OPTIONS: >
         -Xss256k -Xms256m -Xmx256m
         -XX:+UseStringDeduplication
         -XX:+UseG1GC
@@ -83,7 +83,7 @@ uaa:
   env:
     open:
       SPRING_PROFILES_ACTIVE: kubernetes
-      JAVA_OPTS: >
+      JAVA_TOOL_OPTIONS: >
         -Xss256k -Xms256m -Xmx256m
         -XX:+UseStringDeduplication
         -XX:+UseG1GC
@@ -122,7 +122,7 @@ report:
       SPRING_PROFILES_ACTIVE: kubernetes
       ALLURE_BLOBSTORAGE_TYPE: FILE_SYSTEM
       ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY: /opt/allure/report/storage
-      JAVA_OPTS: >
+      JAVA_TOOL_OPTIONS: >
         -Xss256k -Xms256m -Xmx1g
         -XX:+UseStringDeduplication
         -XX:+UseG1GC
