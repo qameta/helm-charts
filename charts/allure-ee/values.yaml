@@ -48,6 +48,8 @@ gateway:
   image:
     repository: allure/allure-gateway
   tolerations: []
+  affinity: {}
+  nodeSelector: {}
   service:
     port: 8080
     type: NodePort
@@ -77,6 +79,8 @@ uaa:
   image:
     repository: allure/allure-uaa
   tolerations: []
+  affinity: {}
+  nodeSelector: {}
   service:
     port: 8082
     type: NodePort
@@ -106,6 +110,8 @@ report:
   image:
     repository: allure/allure-report
   tolerations: []
+  affinity: {}
+  nodeSelector: {}
   service:
     port: 8081
     type: NodePort
