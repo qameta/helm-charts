@@ -28,6 +28,14 @@ spec:
 {{- end }}
       tolerations:
 {{ toYaml .Values.uaa.tolerations | indent 8 }}
+{{- if .Values.uaa.affinity }}
+      affinity:
+{{ toYaml .Values.uaa.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.uaa.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.uaa.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "allure-ee.uaa.fullname" . }}
         image: {{ .Values.uaa.image.repository }}:{{ .Values.version }}

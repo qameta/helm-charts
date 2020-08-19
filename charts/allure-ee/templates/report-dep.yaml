@@ -28,6 +28,14 @@ spec:
 {{- end }}
       tolerations:
 {{ toYaml .Values.report.tolerations | indent 8 }}
+{{- if .Values.report.affinity }}
+      affinity:
+{{ toYaml .Values.report.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.report.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.report.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "allure-ee.report.fullname" . }}
         image: {{ .Values.report.image.repository }}:{{ .Values.version }}
