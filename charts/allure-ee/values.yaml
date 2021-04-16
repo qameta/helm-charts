@@ -128,7 +128,7 @@ report:
     port: 8081
     type: NodePort
   persistence:
-    enabled: true
+    enabled: false
     accessMode: ReadWriteOnce
     # existingClaim: ""
     size: 10Gi
