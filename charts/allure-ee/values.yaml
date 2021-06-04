@@ -43,6 +43,18 @@ postgresql:
   persistence:
     size: 20Gi
 
+minio:
+  enabled: true
+
+  defaultBuckets: allure-storage
+
+  accessKey:
+    password: minio-allure-key
+  secretKey:
+    password: minio-allure-secret
+  persistence:
+    size: 20Gi
+
 gateway:
   replicaCount: 1
   image:
@@ -116,7 +128,7 @@ report:
     port: 8081
     type: NodePort
   persistence:
-    enabled: true
+    enabled: false
     accessMode: ReadWriteOnce
     # existingClaim: ""
     size: 10Gi
@@ -126,12 +138,19 @@ report:
   env:
     open:
       SPRING_PROFILES_ACTIVE: kubernetes
-      ALLURE_BLOBSTORAGE_TYPE: FILE_SYSTEM
       ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY: /opt/allure/report/storage
       JAVA_TOOL_OPTIONS: >
         -Xss256k -Xms256m -Xmx1g
         -XX:+UseStringDeduplication
         -XX:+UseG1GC
+      ALLURE_BLOBSTORAGE_TYPE: S3
+      ALLURE_BLOBSTORAGE_S3_ENDPOINT: http://allure-ee-minio:9000/
+      ALLURE_BLOBSTORAGE_S3_BUCKET: allure-storage
+      ALLURE_BLOBSTORAGE_S3_REGION: default
+      ALLURE_BLOBSTORAGE_S3_PATHSTYLEACCESS: true
+    secret:
+      ALLURE_BLOBSTORAGE_S3_ACCESSKEY: minio-allure-key
+      ALLURE_BLOBSTORAGE_S3_SECRETKEY: minio-allure-secret
   resources: {}
   probes:
     enabled: true
