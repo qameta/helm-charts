@@ -25,6 +25,10 @@ ingress:
   #   hosts:
   #     - allure.local
 
+redis:
+  enabled: true
+  password: allure
+
 rabbitmq:
   enabled: true
   rabbitmq:
