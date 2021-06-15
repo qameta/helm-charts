@@ -61,3 +61,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "allure-ee.postgresql.fullname" -}}
 {{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified postgresql name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "allure-ee.redis.fullname" -}}
+{{- printf "%s-%s-master" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

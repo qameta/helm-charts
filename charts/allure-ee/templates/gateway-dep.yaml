@@ -48,6 +48,12 @@ spec:
         - name: {{ $name | quote }}
           value: {{ $value | quote }}
 {{- end }}
+{{- if .Values.redis.enabled }}
+        - name: SPRING_REDIS_HOST
+          value: {{ template "allure-ee.redis.fullname" . }}
+        - name: SPRING_REDIS_PASSWORD
+          value: {{ .Values.redis.password }}
+{{- end }}
 {{- $secret_name := include "allure-ee.fullname" . }}
 {{- range $name, $value := .Values.gateway.env.secret }}
 {{- if not (empty $value) }}
