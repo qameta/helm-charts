@@ -1,4 +1,4 @@
-version: 3.174.0
+version: 3.177.1
 
 username: admin
 password: admin
@@ -59,6 +59,7 @@ gateway:
     type: NodePort
   env:
     open:
+      SPRING_SESSION_STORE_TYPE: REDIS
       SPRING_PROFILES_ACTIVE: kubernetes
       JAVA_TOOL_OPTIONS: >
         -Xss256k -Xms256m -Xmx256m
