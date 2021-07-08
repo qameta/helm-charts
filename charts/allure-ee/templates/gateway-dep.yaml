@@ -55,6 +55,11 @@ spec:
           value: {{ .Values.redis.password }}
 {{- end }}
 {{- $secret_name := include "allure-ee.fullname" . }}
+        - name: ALLURE_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: "jwtSecret"
 {{- range $name, $value := .Values.gateway.env.secret }}
 {{- if not (empty $value) }}
         - name: {{ $name | quote }}
