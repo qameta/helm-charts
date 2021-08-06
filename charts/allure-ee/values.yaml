@@ -17,9 +17,9 @@ strategy:
 ingress:
 #  host: allure.local
   annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    # kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # nginx.ingress.kubernetes.io/proxy-body-size: "50m"
   tls:
   # - secretName: allure.local
   #   hosts:
