@@ -2,6 +2,36 @@ apiVersion: v1
 entries:
   allure-ee:
   - apiVersion: v1
+    appVersion: 3.181.5
+    created: "2021-09-21T13:03:26.405157692Z"
+    dependencies:
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.helm.sh/stable
+      version: ~6.18.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.helm.sh/stable
+      version: ~8.4.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.helm.sh/stable
+      version: ~10.5.6
+    description: Allure TestOps
+    digest: 96101ada13b6906a5f2a55fb48f740cb4aecc6e9527e7c558add59be9f6a2bee
+    home: https://qameta.io
+    maintainers:
+    - email: eroshenkoam@qameta.io
+      name: eroshenkoam
+    name: allure-ee
+    sources:
+    - https://hub.docker.com/r/allure/allure-ui
+    - https://hub.docker.com/r/allure/allure-uaa
+    - https://hub.docker.com/r/allure/allure-report
+    urls:
+    - https://github.com/qameta/helm-charts/releases/download/allure-ee-1.9.4/allure-ee-1.9.4.tgz
+    version: 1.9.4
+  - apiVersion: v1
     appVersion: 3.177.2
     created: "2021-07-16T15:28:12.320159145Z"
     dependencies:
@@ -257,4 +287,4 @@ entries:
     urls:
     - https://github.com/qameta/helm-charts/releases/download/allure-ee-1.5.4/allure-ee-1.5.4.tgz
     version: 1.5.4
-generated: "2021-07-16T15:28:12.320214246Z"
+generated: "2021-09-21T13:03:26.405505822Z"
