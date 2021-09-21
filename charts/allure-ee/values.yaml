@@ -1,9 +1,8 @@
-version: 3.177.2
+version: 3.181.5
 
 username: admin
 password: admin
 
-licenseKey:
 # imagePullSecret: allure-server
 
 rbac:

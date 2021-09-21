@@ -78,11 +78,6 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: "password"
-        - name: "ALLURE_LICENSE_BODY"
-          valueFrom:
-            secretKeyRef:
-              name: {{ $secret_name }}
-              key: "licenseKey"
 {{- range $name, $value := .Values.uaa.env.secret }}
 {{- if not (empty $value) }}
         - name: {{ $name | quote }}
