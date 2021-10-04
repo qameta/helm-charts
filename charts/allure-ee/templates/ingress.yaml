@@ -1,5 +1,9 @@
 {{- if .Values.ingress.host }}
-apiVersion: extensions/v1beta1
+{{- $ingressApiIsStable := eq (include "allure-ee.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsIngressClassName := eq (include "allure-ee.ingress.supportsIngressClassName" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "allure-ee.ingress.supportsPathType" .) "true" -}}
+{{- $ingressPathType := .Values.ingress.pathType | default "ImplementationSpecific" -}}
+apiVersion: {{ include "allure-ee.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "allure-ee.fullname" . }}
@@ -13,14 +17,31 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
 spec:
+  {{- if and $ingressSupportsIngressClassName .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
       - path: /
+        {{- if $ingressSupportsPathType }}
+        pathType: {{ $ingressPathType }}
+        {{- end }}
         backend:
+          {{- if $ingressApiIsStable }}
+          service:
+            name: {{ template "allure-ee.gateway.fullname" . }}
+            port:
+              {{- if kindIs "float64" .Values.gateway.service.port }}
+              number: {{ .Values.gateway.service.port }}
+              {{- else }}
+              name: {{ .Values.gateway.service.port }}
+              {{- end }}
+          {{- else }}
           serviceName: {{ template "allure-ee.gateway.fullname" . }}
           servicePort: {{ .Values.gateway.service.port }}
+          {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
