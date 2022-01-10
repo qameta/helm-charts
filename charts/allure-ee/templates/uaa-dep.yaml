@@ -73,7 +73,7 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: "username"
-        - name: "ALLURE_SECURITY_USER_PASSWORD"
+        - name: "ALLURE_CRYPTO_PASSWORD"
           valueFrom:
             secretKeyRef:
               name: {{ $secret_name }}
