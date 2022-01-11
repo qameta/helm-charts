@@ -71,6 +71,11 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- $secret_name := include "allure-ee.fullname" . }}
+        - name: "ALLURE_CRYPTO_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: "password"
 {{- range $name, $value := .Values.report.env.secret }}
 {{- if not (empty $value) }}
         - name: {{ $name | quote }}
