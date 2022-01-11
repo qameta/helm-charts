@@ -78,6 +78,11 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: "password"
+        - name: "ALLURE_SECURITY_USER_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: "password"
 {{- range $name, $value := .Values.uaa.env.secret }}
 {{- if not (empty $value) }}
         - name: {{ $name | quote }}
