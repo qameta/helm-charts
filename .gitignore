@@ -4,6 +4,6 @@
 
 # Charts
 charts/**/charts
-
+charts/**/requirements.lock
 # Configs
 configs
