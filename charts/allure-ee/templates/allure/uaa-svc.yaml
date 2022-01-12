@@ -5,6 +5,7 @@ metadata:
   name: {{ template "allure-ee.uaa.fullname" . }}
   labels:
     app: {{ template "allure-ee.uaa.fullname" . }}
+    version: v1
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -15,14 +16,9 @@ metadata:
 spec:
   selector:
     app: {{ template "allure-ee.uaa.fullname" . }}
+    version: v1
   ports:
   - name: http
-    targetPort: 8082
+    targetPort: {{ .Values.uaa.service.port }}
     port: {{ .Values.uaa.service.port }}
-  type: {{ .Values.uaa.service.type }}
-{{- if .Values.uaa.service.loadBalancerIp -}}
-  loadBalancerIP: {{ .Values.uaa.service.loadBalancerIp }}
-{{- end -}}
-{{- if .Values.uaa.service.externalTrafficPolicy -}}
-  externalTrafficPolicy: {{ .Values.uaa.service.externalTrafficPolicy }}
-{{- end -}}
+  type: ClusterIP

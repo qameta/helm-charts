@@ -4,27 +4,37 @@ metadata:
   name: {{ template "allure-ee.uaa.fullname" . }}
   labels:
     app: {{ template "allure-ee.uaa.fullname" . }}
+    version: v1
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.uaa.replicaCount }}
   strategy:
-{{ toYaml .Values.uaa.strategy | indent 4 }}
+{{ toYaml .Values.strategy | indent 4 }}
   selector:
     matchLabels:
       app: {{ template "allure-ee.uaa.fullname" . }}
+      version: v1
   template:
     metadata:
       labels:
         app: {{ template "allure-ee.uaa.fullname" . }}
+        version: v1
+      annotations:
+        prometheus.io/path: /uaa/management/prometheus
+        prometheus.io/port: "{{ .Values.uaa.service.port }}"
+        prometheus.io/scrape: "true"
+        co.elastic.logs/multiline.pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:"
+        co.elastic.logs/multiline.match: after
+        co.elastic.logs/multiline.negate: "true"
     spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName:  {{ template "allure-ee.name" . }}
 {{- end }}
-{{- if .Values.imagePullSecret }}
+{{- if .Values.registry.enabled }}
       imagePullSecrets:
-      - name: {{ .Values.imagePullSecret }}
+      - name: {{ .Values.registry.imagePullSecret }}
 {{- end }}
       tolerations:
 {{ toYaml .Values.uaa.tolerations | indent 8 }}
@@ -38,12 +48,22 @@ spec:
 {{- end }}
       containers:
       - name: {{ template "allure-ee.uaa.fullname" . }}
-        image: {{ .Values.uaa.image.repository }}:{{ .Values.version }}
-        imagePullPolicy: {{ .Values.uaa.image.pullPolicy }}
+        image: {{ .Values.registry.name }}{{ .Values.uaa.image }}:{{ .Values.version | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.registry.pullPolicy }}
+        securityContext:
+          runAsUser: {{ .Values.runAsUser }}
         ports:
         - name: http
           containerPort: 8082
         env:
+        - name: ALLURE_ENDPOINT
+{{- if .Values.network.tls.enabled }}
+          value: https://{{ .Values.host }}
+{{- else }}
+          value: http://{{ .Values.host }}
+        - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI
+          value: http://{{ template "allure-ee.uaa.fullname" . }}:{{ .Values.uaa.service.port }}{{ .Values.uaa.env.open.SERVER_SERVLET_CONTEXTPATH }}.well-known/jwks.json
+{{- end }}
 {{- if .Values.postgresql.enabled }}
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://{{ template "allure-ee.postgresql.fullname" . }}/uaa
@@ -51,12 +71,6 @@ spec:
           value: {{ .Values.postgresql.postgresqlUsername }}
         - name: SPRING_DATASOURCE_PASSWORD
           value: {{ .Values.postgresql.postgresqlPassword }}
-        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-          value: org.postgresql.Driver
-        - name: SPRING_JPA_DATABASE_PLATFORM
-          value: org.hibernate.dialect.PostgreSQL9Dialect
-        - name: SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS
-          value: 'true'
 {{- end }}
 {{- range $name, $value := .Values.uaa.env.open }}
         - name: {{ $name | quote }}
@@ -68,6 +82,11 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: "jwtSecret"
+        - name: ALLURE_LICENSE_BODY
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: "license"
         - name: "ALLURE_SECURITY_USER_NAME"
           valueFrom:
             secretKeyRef:
@@ -95,12 +114,12 @@ spec:
 {{- if .Values.uaa.probes.enabled }}
         livenessProbe:
           httpGet:
-            path: /uaa/management/health
+            path: {{ .Values.uaa.env.open.SERVER_SERVLET_CONTEXTPATH }}management/health
             port: http
 {{ toYaml .Values.uaa.probes.liveness.probe | indent 10 }}
         readinessProbe:
           httpGet:
-            path: /uaa/management/health
+            path: {{ .Values.uaa.env.open.SERVER_SERVLET_CONTEXTPATH }}management/health
             port: http
 {{ toYaml .Values.uaa.probes.readiness.probe | indent 10 }}
 {{- end }}
