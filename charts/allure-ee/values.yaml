@@ -16,7 +16,7 @@ host: localhost
 # Registry Auth
 registry:
   enabled: false # Private registry or Proxy like Nexus
-  name: ghcr.io/qameta/ # Prefix with registry name, should end with /
+  name: allure/ # Prefix with registry name, should end with /
   imagePullSecret: allure-server
   pullPolicy: IfNotPresent
 
