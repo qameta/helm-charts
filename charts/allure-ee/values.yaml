@@ -1,8 +1,5 @@
 version: 3.188.3
 
-# License
-license: your_license_key
-
 # Credentials for accessing AllureTestOps as Admin on default auth scheme
 username: admin
 password: admin

@@ -82,11 +82,6 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: "jwtSecret"
-        - name: ALLURE_LICENSE_BODY
-          valueFrom:
-            secretKeyRef:
-              name: {{ $secret_name }}
-              key: "license"
         - name: "ALLURE_SECURITY_USER_NAME"
           valueFrom:
             secretKeyRef:
