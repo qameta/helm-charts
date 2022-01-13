@@ -1,3 +1,4 @@
+---
 dependencies:
   - name: rabbitmq
     version: ~8.26.0
@@ -11,3 +12,7 @@ dependencies:
     version: ~10.0.0
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
+  - name: minio
+    version: 10.0.1
+    repository: https://charts.bitnami.com/bitnami
+    condition: minio.enabled

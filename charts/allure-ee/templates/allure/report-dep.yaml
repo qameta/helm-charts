@@ -81,6 +81,27 @@ spec:
         - name: SPRING_DATASOURCE_PASSWORD
           value: {{ .Values.postgresql.postgresqlPassword }}
 {{- end }}
+{{- if .Values.minio.enabled }}
+        - name: ALLURE_BLOBSTORAGE_TYPE
+          value: S3
+        - name: ALLURE_BLOBSTORAGE_S3_ENDPOINT
+          value: "http://{{ template "allure-ee.minio.fullname" . }}:{{ .Values.minio.service.ports.api }}"
+        - name: ALLURE_BLOBSTORAGE_S3_BUCKET
+          value: {{ .Values.minio.defaultBuckets }}
+        - name: ALLURE_BLOBSTORAGE_S3_REGION
+          value: {{ .Values.minio.defaultRegion }}
+        - name: ALLURE_BLOBSTORAGE_S3_ACCESSKEY
+          value: {{ .Values.minio.auth.rootUser }}
+        - name: ALLURE_BLOBSTORAGE_S3_SECRETKEY
+          value: {{ .Values.minio.auth.rootPassword }}
+        - name: ALLURE_BLOBSTORAGE_S3_PATHSTYLEACCESS
+          value: "{{ .Values.file_system.pathstyle }}"
+{{- else }}
+        - name: ALLURE_BLOBSTORAGE_TYPE
+          value: FILE_SYSTEM
+        - name: ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY
+          value: /data
+{{- end }}
 {{- range $name, $value := .Values.report.env.open }}
         - name: {{ $name | quote }}
           value: {{ $value | quote }}
@@ -112,9 +133,9 @@ spec:
             port: http
 {{ toYaml .Values.report.probes.readiness.probe | indent 10 }}
 {{- end }}
-{{- if eq .Values.report.env.open.ALLURE_BLOB_STORAGE_TYPE "FILE_SYSTEM" }}
+{{- if .Values.file_system.has_legacy_volume }}
         volumeMounts:
-        - mountPath: "{{ .Values.report.env.open.ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY }}"
+        - mountPath: "{{ .Values.file_system.legacy_directory }}"
           name: storage-volume
 {{- end }}
 {{- with .Values.report.resources }}

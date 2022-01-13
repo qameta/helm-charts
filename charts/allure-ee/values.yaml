@@ -67,6 +67,34 @@ postgresql:
   persistence:
     size: 20Gi
 
+# Local FS is NOT disabled for migration purpose. Please bear in mind that primary FS for allure is S3
+file_system:
+  primary: S3
+  pathstyle: true
+  has_legacy_volume: true
+  legacy_directory: /opt/allure/report/storage
+
+minio:
+  enabled: true
+  auth:
+    rootUser: WBuetMuTAMAB4M78NG3gQ4dCFJr3SSmU # Replace with your Access Key
+    rootPassword: m9F4qupW4ucKBDQBWr4rwQLSAeC6FE2L # Replace with your Secret Key
+  disableWebUI: true
+  service:
+    ports:
+      api: 9000
+  defaultBuckets: allure-testops
+  defaultRegion: qameta-0
+  provisioning:
+    enabled: true
+    buckets:
+      - name: allure-testops
+        region: qameta-0
+    config:
+      - name: region
+        options:
+          name: qameta-0
+
 gateway:
   replicaCount: 1
   image: allure-gateway
@@ -97,7 +125,7 @@ gateway:
       memory: 1Gi
       cpu: 500m
     limits:
-      memory: 1Gi
+      memory: 1536Mi
       cpu: 1
   probes:
     enabled: true
@@ -206,8 +234,6 @@ report:
       MANAGEMENT_HEALTH_DISKSPACE_ENABLED: "false"
       MANAGEMENT_HEALTH_KUBERNETES_ENABLED: "false"
       SPRING_CLOUD_DISCOVERY_CLIENT_HEALTH_INDICATOR_ENABLED: "false"
-      ALLURE_BLOB_STORAGE_TYPE: "FILE_SYSTEM"
-      ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY: /data
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
