@@ -1,20 +1,13 @@
-# Attention!
+# Attention! Attention! Attention!
 
 ## This helm chart is deprecated
 
-This helm chart is deprecated
-
-This helm chart is deprecated
 
 This helm chart is deprecated
 
 ## This helm chart is no longer supported
 
-This helm chart is no longer supported
-
-This helm chart is no longer supported
-
-This helm chart is no longer supported
+This helm chart is no longer supported and maintained
 
 Please do not use this helm chart
 
