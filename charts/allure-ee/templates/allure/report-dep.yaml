@@ -1,30 +1,41 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "allure-ee.report.fullname" . }}
   labels:
     app: {{ template "allure-ee.report.fullname" . }}
+    version: v1
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.report.replicaCount }}
   strategy:
-{{ toYaml .Values.report.strategy | indent 4 }}
+{{ toYaml .Values.strategy | indent 4 }}
   selector:
     matchLabels:
       app: {{ template "allure-ee.report.fullname" . }}
+      version: v1
   template:
     metadata:
       labels:
         app: {{ template "allure-ee.report.fullname" . }}
+        version: v1
+      annotations:
+        prometheus.io/path: /rs/management/prometheus
+        prometheus.io/port: "{{ .Values.report.service.port }}"
+        prometheus.io/scrape: "true"
+        co.elastic.logs/multiline.pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:"
+        co.elastic.logs/multiline.match: after
+        co.elastic.logs/multiline.negate: "true"
     spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "allure-ee.name" . }}
 {{- end }}
-{{- if .Values.imagePullSecret }}
+{{- if .Values.registry.enabled }}
       imagePullSecrets:
-      - name: {{ .Values.imagePullSecret }}
+      - name: {{ .Values.registry.imagePullSecret }}
 {{- end }}
       tolerations:
 {{ toYaml .Values.report.tolerations | indent 8 }}
@@ -38,19 +49,29 @@ spec:
 {{- end }}
       containers:
       - name: {{ template "allure-ee.report.fullname" . }}
-        image: {{ .Values.report.image.repository }}:{{ .Values.version }}
-        imagePullPolicy: {{ .Values.report.image.pullPolicy }}
+        image: {{ .Values.registry.name }}{{ .Values.report.image }}:{{ .Values.version | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.registry.pullPolicy }}
+        securityContext:
+          runAsUser: {{ .Values.runAsUser }}
         ports:
         - name: http
           containerPort: 8081
         env:
+        - name: ALLURE_ENDPOINT
+{{- if .Values.network.tls.enabled }}
+          value: https://{{ .Values.host }}
+{{- else }}
+          value: http://{{ .Values.host }}
+        - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI
+          value: http://{{ template "allure-ee.uaa.fullname" . }}:{{ .Values.uaa.service.port }}{{ .Values.uaa.env.open.SERVER_SERVLET_CONTEXTPATH }}.well-known/jwks.json
+{{- end }}
 {{- if .Values.rabbitmq.enabled }}
         - name: SPRING_RABBITMQ_HOST
           value: {{ template "allure-ee.rabbitmq.fullname" . }}
         - name: SPRING_RABBITMQ_USERNAME
-          value: {{ .Values.rabbitmq.rabbitmq.username }}
+          value: {{ .Values.rabbitmq.auth.username }}
         - name: SPRING_RABBITMQ_PASSWORD
-          value: {{ .Values.rabbitmq.rabbitmq.password }}
+          value: {{ .Values.rabbitmq.auth.password }}
 {{- end }}
 {{- if .Values.postgresql.enabled }}
         - name: SPRING_DATASOURCE_URL
@@ -59,12 +80,27 @@ spec:
           value: {{ .Values.postgresql.postgresqlUsername }}
         - name: SPRING_DATASOURCE_PASSWORD
           value: {{ .Values.postgresql.postgresqlPassword }}
-        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-          value: org.postgresql.Driver
-        - name: SPRING_JPA_DATABASE_PLATFORM
-          value: org.hibernate.dialect.PostgreSQL9Dialect
-        - name: SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS
-          value: 'true'
+{{- end }}
+{{- if .Values.minio.enabled }}
+        - name: ALLURE_BLOBSTORAGE_TYPE
+          value: S3
+        - name: ALLURE_BLOBSTORAGE_S3_ENDPOINT
+          value: "http://{{ template "allure-ee.minio.fullname" . }}:{{ .Values.minio.service.ports.api }}"
+        - name: ALLURE_BLOBSTORAGE_S3_BUCKET
+          value: {{ .Values.minio.defaultBuckets }}
+        - name: ALLURE_BLOBSTORAGE_S3_REGION
+          value: {{ .Values.minio.defaultRegion }}
+        - name: ALLURE_BLOBSTORAGE_S3_ACCESSKEY
+          value: {{ .Values.minio.auth.rootUser }}
+        - name: ALLURE_BLOBSTORAGE_S3_SECRETKEY
+          value: {{ .Values.minio.auth.rootPassword }}
+        - name: ALLURE_BLOBSTORAGE_S3_PATHSTYLEACCESS
+          value: "{{ .Values.file_system.pathstyle }}"
+{{- else }}
+        - name: ALLURE_BLOBSTORAGE_TYPE
+          value: FILE_SYSTEM
+        - name: ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY
+          value: /data
 {{- end }}
 {{- range $name, $value := .Values.report.env.open }}
         - name: {{ $name | quote }}
@@ -88,18 +124,18 @@ spec:
 {{- if .Values.report.probes.enabled }}
         livenessProbe:
           httpGet:
-            path: /rs/management/health
+            path: {{ .Values.report.env.open.SERVER_SERVLET_CONTEXTPATH }}management/health
             port: http
 {{ toYaml .Values.report.probes.liveness.probe | indent 10 }}
         readinessProbe:
           httpGet:
-            path: /rs/management/health
+            path: {{ .Values.report.env.open.SERVER_SERVLET_CONTEXTPATH }}management/health
             port: http
 {{ toYaml .Values.report.probes.readiness.probe | indent 10 }}
 {{- end }}
-{{- if eq .Values.report.env.open.ALLURE_BLOBSTORAGE_TYPE "FILE_SYSTEM" }}
+{{- if .Values.file_system.has_legacy_volume }}
         volumeMounts:
-        - mountPath: "{{ .Values.report.env.open.ALLURE_BLOBSTORAGE_FILESYSTEM_DIRECTORY }}"
+        - mountPath: "{{ .Values.file_system.legacy_directory }}"
           name: storage-volume
 {{- end }}
 {{- with .Values.report.resources }}

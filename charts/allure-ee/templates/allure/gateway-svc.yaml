@@ -5,6 +5,7 @@ metadata:
   name: {{ template "allure-ee.gateway.fullname" . }}
   labels:
     app: {{ template "allure-ee.gateway.fullname" . }}
+    version: v1
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -15,14 +16,9 @@ metadata:
 spec:
   selector:
     app: {{ template "allure-ee.gateway.fullname" . }}
+    version: v1
   ports:
   - name: http
-    targetPort: 8080
+    targetPort: {{ .Values.gateway.service.port }}
     port: {{ .Values.gateway.service.port }}
-  type: {{ .Values.gateway.service.type }}
-{{- if .Values.gateway.service.loadBalancerIp -}}
-  loadBalancerIP: {{ .Values.gateway.service.loadBalancerIp }}
-{{- end -}}
-{{- if .Values.gateway.service.externalTrafficPolicy -}}
-  externalTrafficPolicy: {{ .Values.gateway.service.externalTrafficPolicy }}
-{{- end -}}
+  type: ClusterIP
